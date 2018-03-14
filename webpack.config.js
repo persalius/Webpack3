@@ -1,12 +1,16 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const merge = require("webpack-merge");
+const pug = require("./webpack/pug");
+const devserver = require("./webpack/devserver");
 
 const PATHS = {
     source: path.join(__dirname, "src"),
     build: path.join(__dirname, "dist")
 };
 
-const common = {
+const common = merge([
+    {
     entry: {
         "index": PATHS.source + "/pages/index/index.js",
         "blog": PATHS.source + "/pages/blog/blog.js"
@@ -26,32 +30,16 @@ const common = {
             chunks: ["blog"],
             template: PATHS.source + "/pages/blog/blog.pug"
         })
-    ],
-    module: {
-        rules: [
-            {
-                test: /\.pug$/,
-                loader: "pug-loader",
-                options: {
-                    pretty: true
-                }
-            }
-        ]
-    }   
-};
-
-const developmentConfig = {
-    devServer: {
-        stats: "errors-only",
-        port: 9000
-    }
-};
+    ]
+    },
+    pug()
+]);
 
 module.exports = function(env) {
     if (env === "production") {
         return common;
     }
     if (env === "development") {
-        return Object.assign({}, common, developmentConfig);
+        return merge([common, devserver()]);
     }
 };
