@@ -7,3 +7,5 @@ var menu = createMenu(["Главная", "Блог"], "menu");
 document.body.appendChild(menu);
 
 console.log("In index.js");
+console.log($);
+console.log(jQuery);
